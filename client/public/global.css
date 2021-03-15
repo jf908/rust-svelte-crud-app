@@ -1,0 +1,61 @@
+:root {
+  --background: white;
+  --border-color: rgba(0,0,0,.2);
+  --border-width: 2px;
+  --border-radius: 5px;
+  --default-border: var(--border-width) solid var(--border-color);
+  --danger-color: rgb(233, 75, 75);
+  --large-padding: 2em;
+  --input-padding: 0.5em 1em;
+  --standard-padding: 1em;
+  --small-padding: 3px 8px;
+
+  --font-size-small: 12px;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  margin: 0;
+}
+
+body {
+  margin: 0;
+  font-size: 14px;
+  font-family: 'Recursive', sans-serif;
+  background: var(--background);
+}
+
+input,
+button,
+textarea, .input {
+  font-family: inherit;
+  font-size: inherit;
+  background: inherit;
+  color: inherit;
+
+  padding: var(--input-padding);
+  border: var(--default-border);
+  border-radius: var(--border-radius);
+  outline: 0;
+}
+
+button {
+  cursor: pointer;
+}
+
+button:active {
+  transform: translateY(1px);
+}
+
+.container {
+  margin: auto;
+  max-width: 1024px;
+}
+
+.danger {
+  background: var(--danger-color);
+  color: white;
+}
