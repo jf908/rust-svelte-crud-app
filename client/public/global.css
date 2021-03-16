@@ -1,6 +1,6 @@
 :root {
   --background: white;
-  --border-color: rgba(0,0,0,.2);
+  --border-color: rgba(0, 0, 0, 0.2);
   --border-width: 2px;
   --border-radius: 5px;
   --default-border: var(--border-width) solid var(--border-color);
@@ -9,6 +9,7 @@
   --input-padding: 0.5em 1em;
   --standard-padding: 1em;
   --small-padding: 3px 8px;
+  --hover-shadow: 0 4px 6px rgba(0, 0, 0, 0.25);
 
   --font-size-small: 12px;
 }
@@ -17,7 +18,12 @@
   box-sizing: border-box;
 }
 
-h1, h2, h3, h4, h5, h6 {
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
   margin: 0;
 }
 
@@ -30,10 +36,11 @@ body {
 
 input,
 button,
-textarea, .input {
+textarea,
+.input {
   font-family: inherit;
   font-size: inherit;
-  background: inherit;
+  background: var(--background);
   color: inherit;
 
   padding: var(--input-padding);
@@ -53,9 +60,22 @@ button:active {
 .container {
   margin: auto;
   max-width: 1024px;
+  padding: 0 1em;
 }
 
 .danger {
   background: var(--danger-color);
   color: white;
+}
+
+.tag {
+  display: inline-flex;
+  font-size: var(--font-size-small);
+  padding: var(--small-padding);
+  margin-bottom: 6px;
+  display: inline-block;
+  border-radius: 2em;
+  background: rgba(0, 0, 0, 0.1);
+  margin-right: 0.5em;
+  user-select: none;
 }

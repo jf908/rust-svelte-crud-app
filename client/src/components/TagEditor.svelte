@@ -2,6 +2,7 @@
   import type { Tag } from '../lib/api';
 
   import { confirmModal, tags } from '../store';
+  import Icon from './Icon.svelte';
   import InlineTag from './InlineTag.svelte';
 
   let tagName = '';
@@ -28,13 +29,15 @@
   <h2>Tag Editor</h2>
   <form on:submit|preventDefault={createTag}>
     <input type="text" bind:value={tagName} placeholder="Create tag" />
-    <button on:click={createTag}>+</button>
+    <button on:click={createTag}> + </button>
   </form>
   {#if $tags}
     {#each $tags as tag}
       <div class="row">
         <InlineTag {tag} />
-        <button on:click={() => deleteTag(tag)}>Delete</button>
+        <div class="actions">
+          <button on:click={() => deleteTag(tag)}>Delete</button>
+        </div>
       </div>
     {/each}
   {/if}
@@ -50,8 +53,28 @@
     margin: auto;
   }
 
+  form {
+    margin-bottom: 0.5em;
+  }
+
   .row {
-    padding: 0.25em;
+    display: flex;
+    border-radius: var(--border-radius);
+    align-items: baseline;
+    padding: 0.1em 0.5em;
+  }
+
+  .row .actions {
+    margin-left: auto;
+    visibility: hidden;
+  }
+
+  .row:hover {
+    background: rgba(0, 0, 0, 0.05);
+  }
+
+  .row:hover .actions {
+    visibility: visible;
   }
 
   .row button {

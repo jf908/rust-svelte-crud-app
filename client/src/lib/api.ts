@@ -51,13 +51,13 @@ export const api = {
     },
     tag: {
       add(tag: QuestionTag) {
-        return request(url.question, {
+        return request(url.questionTag, {
           method: 'POST',
           body: tag,
         });
       },
       remove(tag: QuestionTag) {
-        return request(url.question, {
+        return request(url.questionTag, {
           method: 'DELETE',
           body: tag,
         });

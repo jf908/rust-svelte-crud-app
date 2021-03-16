@@ -17,8 +17,10 @@
 <style>
   .back {
     background: var(--background);
-    padding: 2em;
     border-radius: var(--border-radius);
-    min-width: 800px;
+    padding: 2em;
+    max-width: 400px;
+    width: 100%;
+    min-height: 100%;
   }
 </style>

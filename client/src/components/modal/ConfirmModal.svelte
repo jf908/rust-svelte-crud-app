@@ -2,6 +2,9 @@
   // import Icon from '../Icon.svelte';
   import Modal from './Modal.svelte';
   import { confirmModal } from '../../store';
+  import type { ConfirmModal } from '../../store';
+
+  let confirmButton: HTMLElement;
 
   function confirm() {
     if ($confirmModal) {
@@ -12,6 +15,13 @@
 
   function cancel() {
     $confirmModal = null;
+  }
+
+  $: watch($confirmModal, confirmButton);
+  function watch(modal: ConfirmModal | null, button: HTMLElement) {
+    if (modal && button) {
+      button.focus();
+    }
   }
 </script>
 
@@ -26,7 +36,10 @@
   <div class="body">{$confirmModal.body}</div>
   <footer>
     <button on:click={cancel}>Cancel</button>
-    <button class="danger" on:click={confirm}>Delete</button>
+    <button
+      class="danger"
+      bind:this={confirmButton}
+      on:click={confirm}>Delete</button>
   </footer>
 </Modal>
 

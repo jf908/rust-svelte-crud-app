@@ -1,0 +1,15 @@
+{
+  "srcFiles": [
+    "./src/svg/*.svg"
+  ],
+  "conversionType": "object",
+  "fileName": "icons",
+  "outputDirectory": "./src/lib/",
+  "svgoConfig": {
+    "plugins": [
+      {
+        "removeDimesnsions": false
+      }
+    ]
+  }
+}

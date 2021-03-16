@@ -34,6 +34,12 @@ function createQuestionStore() {
       let qs = await api.question.get();
       store.set(qs);
     },
+    async addTag(question_id: number, tag_id: number) {
+      await api.question.tag.add({ question_id, tag_id });
+    },
+    async removeTag(question_id: number, tag_id: number) {
+      await api.question.tag.remove({ question_id, tag_id });
+    },
   };
 }
 

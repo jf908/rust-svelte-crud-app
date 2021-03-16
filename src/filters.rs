@@ -69,8 +69,7 @@ pub fn tag_list(
 }
 
 pub fn tag_add(db: Db) -> impl Filter<Extract = impl warp::Reply, Error = warp::Rejection> + Clone {
-  warp::path!("question")
-    .and(warp::path("tag"))
+  warp::path!("question" / "tag")
     .and(warp::post())
     .and(warp::body::json())
     .and(with_db(db))
@@ -80,8 +79,7 @@ pub fn tag_add(db: Db) -> impl Filter<Extract = impl warp::Reply, Error = warp::
 pub fn tag_remove(
   db: Db,
 ) -> impl Filter<Extract = impl warp::Reply, Error = warp::Rejection> + Clone {
-  warp::path!("question")
-    .and(warp::path("tag"))
+  warp::path!("question" / "tag")
     .and(warp::delete())
     .and(warp::body::json())
     .and(with_db(db))

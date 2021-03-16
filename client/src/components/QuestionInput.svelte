@@ -2,9 +2,9 @@
   import { questions, tagEditor } from '../store';
 
   import AutoHeightTextarea from './AutoHeightTextarea.svelte';
-  import TagSelector from './TagSelector.svelte';
+  import TagFilter from './TagFilter.svelte';
 
-  let body: string;
+  let body: string = '';
   let selectedTags: Set<number>;
   let root: HTMLElement;
 
@@ -36,7 +36,7 @@
     bind:value={body}
     on:keydown={onKeyDown} />
   <div class="tag-selector" on:mousedown|self={onMouseDown}>
-    <TagSelector bind:selected={selectedTags} /><button
+    <TagFilter bind:selected={selectedTags} /><button
       class="edit-button"
       on:click={() => ($tagEditor = true)}>Edit...</button>
   </div>
@@ -52,12 +52,13 @@
     display: block;
     border: 0;
     width: 100%;
-    resize: none;
     padding: var(--standard-padding);
   }
 
   .tag-selector {
     padding: 0 8px 8px;
+    /* Cancel out .tag padding-bottom */
+    margin-bottom: -6px;
   }
 
   .edit-button {

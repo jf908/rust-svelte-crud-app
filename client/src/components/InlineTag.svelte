@@ -9,16 +9,7 @@
 
 <style>
   .tag {
-    font-size: var(--font-size-small);
-    padding: var(--small-padding);
-    display: inline-block;
-    border-radius: 2em;
-    background: rgba(0, 0, 0, 0.1);
-    margin-right: 0.5em;
-    cursor: pointer;
-    user-select: none;
     transition: opacity 0.2s;
-
     opacity: 0.5;
   }
 

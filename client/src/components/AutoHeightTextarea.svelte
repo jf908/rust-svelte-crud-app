@@ -1,10 +1,11 @@
 <script>
   import { onMount } from 'svelte';
 
-  let className: string;
+  let className: string = '';
   export { className as class };
   let el: HTMLTextAreaElement;
   export let value: string;
+  export let autofocus = false;
   export let placeholder: string | undefined = undefined;
 
   $: watch(value);
@@ -17,6 +18,10 @@
 
   onMount(() => {
     watch(value);
+    if (autofocus) {
+      el.setSelectionRange(0, value.length);
+      el.focus();
+    }
   });
 </script>
 
@@ -31,5 +36,6 @@
 <style>
   textarea {
     overflow: hidden;
+    resize: none;
   }
 </style>

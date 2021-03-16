@@ -14,9 +14,9 @@
 
 <TagEditorOverlay />
 <div class="app">
-  <aside>
+  <!-- <aside>
     <h1>Question Editor</h1>
-  </aside>
+  </aside> -->
   <main>
     <div class="container">
       {#await connection}
