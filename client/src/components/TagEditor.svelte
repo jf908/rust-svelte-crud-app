@@ -70,7 +70,7 @@
   }
 
   .row:hover {
-    background: rgba(0, 0, 0, 0.05);
+    background: var(--hover-color);
   }
 
   .row:hover .actions {
