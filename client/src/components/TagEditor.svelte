@@ -2,6 +2,7 @@
   import type { Tag } from '../lib/api';
 
   import { confirmModal, tags } from '../store';
+  import AsyncTextBox from './AsyncTextBox.svelte';
   import Icon from './Icon.svelte';
   import InlineTag from './InlineTag.svelte';
 
@@ -23,6 +24,10 @@
       confirm: () => tags.deleteTag(tag.id),
     };
   }
+
+  async function editTag(id: number, name: string) {
+    await tags.editTag(id, name);
+  }
 </script>
 
 <div class="tags">
@@ -31,16 +36,21 @@
     <input type="text" bind:value={tagName} placeholder="Create tag" />
     <button on:click={createTag}> + </button>
   </form>
-  {#if $tags}
-    {#each $tags as tag}
-      <div class="row">
-        <InlineTag {tag} />
-        <div class="actions">
-          <button on:click={() => deleteTag(tag)}>Delete</button>
+  <div class="rows">
+    {#if $tags}
+      {#each $tags as tag}
+        <div class="row">
+          <AsyncTextBox
+            asyncChange={(v) => editTag(tag.id, v)}
+            class="tag-name"
+            bind:value={tag.name} />
+          <div class="actions">
+            <button on:click={() => deleteTag(tag)}>Delete</button>
+          </div>
         </div>
-      </div>
-    {/each}
-  {/if}
+      {/each}
+    {/if}
+  </div>
 </div>
 
 <style>
@@ -49,19 +59,32 @@
   }
 
   .tags {
+    display: flex;
+    flex-direction: column;
     text-align: left;
     margin: auto;
+    height: 100%;
   }
 
   form {
+    display: flex;
     margin-bottom: 0.5em;
+  }
+
+  form input {
+    flex: 1;
+    margin-right: 0.5em;
+  }
+
+  .rows {
+    overflow-y: auto;
   }
 
   .row {
     display: flex;
     border-radius: var(--border-radius);
     align-items: baseline;
-    padding: 0.1em 0.5em;
+    padding: 0.25em 0.5em;
   }
 
   .row .actions {
@@ -78,6 +101,16 @@
   }
 
   .row button {
-    font-size: 12px;
+    font-size: var(--font-size-small);
+  }
+
+  .row :global(.tag-name) {
+    font-size: var(--font-size-small);
+    border-color: transparent;
+  }
+
+  .row:hover :global(.tag-name),
+  .row :global(.tag-name:focus) {
+    border-color: var(--border-color);
   }
 </style>

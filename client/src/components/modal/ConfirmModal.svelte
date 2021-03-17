@@ -28,12 +28,8 @@
 <Modal visible={!!$confirmModal} on:close={cancel}>
   <header>
     <h3>Are you sure you want to delete this?</h3>
-    <div class="close link" on:click={cancel}>
-      <!-- <Icon icon="close" hover="fade" /> -->
-      Close
-    </div>
   </header>
-  <div class="body">{$confirmModal.body}</div>
+  <div class="body">{$confirmModal?.body}</div>
   <footer>
     <button on:click={cancel}>Cancel</button>
     <button
@@ -51,13 +47,11 @@
   }
 
   h3 {
-    margin: 0;
-    margin-bottom: 1em;
+    margin: 0.5em 0;
   }
 
-  .close {
-    cursor: pointer;
-    margin-left: auto;
+  .body {
+    margin-bottom: 1em;
   }
 
   footer {

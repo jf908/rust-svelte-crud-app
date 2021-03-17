@@ -9,7 +9,10 @@
     background: var(--border-color);
     border-radius: 50%;
     animation: spin 1s infinite linear;
-    transform-origin: 0 1.5em;
+    transform-origin: 0 1em;
+    vertical-align: middle;
+    margin-bottom: 1.4em;
+    margin-right: 0.5em;
   }
 
   .loading:before,
@@ -24,7 +27,7 @@
     top: 0;
     left: 0;
     transform: rotate(120deg);
-    transform-origin: 0em 1.5em;
+    transform-origin: 0em 1em;
   }
 
   .loading:after {

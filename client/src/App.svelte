@@ -20,8 +20,10 @@
   <main>
     <div class="container">
       {#await connection}
-        <Loading />
-        <p>Loading...</p>
+        <p>
+          <Loading />
+          Loading...
+        </p>
       {:then _}
         <QuestionInput />
         {#if $questions}
@@ -43,11 +45,11 @@
     min-height: 100vh;
   }
 
-  aside {
+  /* aside {
     border-right: var(--default-border);
     width: 250px;
     text-align: center;
-  }
+  } */
 
   main {
     padding: 1em 0;

@@ -28,7 +28,6 @@ function createQuestionStore() {
     },
     async editQuestion(id: number, body: string) {
       await api.question.edit({ id, body });
-      // store.update((qs) => qs && qs.filter((x) => x.id === id));
     },
     async refresh() {
       let qs = await api.question.get();
@@ -51,7 +50,7 @@ function createTagsStore() {
   return {
     ...store,
     async addTag(name: string) {
-      const { id } = await api.tag.add({ body: name });
+      const { id } = await api.tag.add({ name });
       store.update(
         (ts) =>
           ts && [
@@ -65,6 +64,9 @@ function createTagsStore() {
           ]
       );
     },
+    async editTag(id: number, name: string) {
+      await api.tag.edit({ id, name });
+    },
     async deleteTag(id: number) {
       await api.tag.remove({ id });
       store.update((ts) => ts && ts.filter((x) => x.id !== id));
@@ -73,10 +75,6 @@ function createTagsStore() {
       let ts = await api.tag.get();
       store.set(ts);
     },
-    // async editQuestion(id: number, body: string) {
-    //   await api.question.edit({ id, body });
-    //   // store.update((qs) => qs && qs.filter((x) => x.id === id));
-    // },
   };
 }
 
@@ -97,3 +95,5 @@ export type ConfirmModal = {
 export const confirmModal = writable<ConfirmModal | null>(null);
 
 export const tagEditor = writable(false);
+
+export const modalStack = writable([]);

@@ -1,15 +1,31 @@
+<script lang="ts" context="module">
+  let overlayStack = 0;
+</script>
+
 <script lang="ts">
   import { fade } from 'svelte/transition';
-  import { createEventDispatcher } from 'svelte';
+  import { createEventDispatcher, onMount } from 'svelte';
+  import { writable } from 'svelte/store';
   const dispatch = createEventDispatcher();
 
-  export let zIndex: number = 100;
+  let id: number;
+  let zIndex = 100;
 
   function handleKeydown(e: KeyboardEvent) {
-    if (e.key === 'Escape') {
+    if (e.key === 'Escape' && id === overlayStack) {
       dispatch('close');
     }
   }
+
+  onMount(() => {
+    overlayStack++;
+    id = overlayStack;
+    zIndex = id * 100;
+
+    return () => {
+      overlayStack--;
+    };
+  });
 </script>
 
 <div

@@ -19,7 +19,7 @@
 
 {#if visible}
   <Overlay on:close>
-    <div class="modal" transition:modal={{ duration: 300, easing: quadOut }}>
+    <div class="modal" transition:modal={{ duration: 200, easing: quadOut }}>
       <slot />
     </div>
   </Overlay>
@@ -30,8 +30,8 @@
     background: var(--background);
     border-radius: var(--border-radius);
     width: 100%;
-    padding: var(--large-padding);
-    max-width: 800px;
+    padding: var(--standard-padding);
+    max-width: 500px;
     overflow-y: auto;
     user-select: none;
   }

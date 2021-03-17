@@ -9,6 +9,7 @@ pub fn root(db: Db) -> impl Filter<Extract = impl warp::Reply, Error = warp::Rej
     .or(questions_edit(db.clone()))
     .or(tag_list(db.clone()))
     .or(tag_add(db.clone()))
+    .or(tag_edit(db.clone()))
     .or(tag_remove(db.clone()))
     .or(tag_create(db.clone()))
     .or(tag_delete(db.clone()))
@@ -104,6 +105,16 @@ pub fn tag_delete(
     .and(warp::body::json())
     .and(with_db(db))
     .and_then(handlers::delete_tag)
+}
+
+pub fn tag_edit(
+  db: Db,
+) -> impl Filter<Extract = impl warp::Reply, Error = warp::Rejection> + Clone {
+  warp::path!("tag")
+    .and(warp::patch())
+    .and(warp::body::json())
+    .and(with_db(db))
+    .and_then(handlers::edit_tag)
 }
 
 fn with_db(db: Db) -> impl Filter<Extract = (Db,), Error = std::convert::Infallible> + Clone {

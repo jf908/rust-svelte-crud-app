@@ -1,4 +1,6 @@
-use super::models::{BodyObj, Db, IdObj, NewQuestion, Question, QuestionEdit, QuestionTag, Tag};
+use super::models::{
+  Db, IdObj, NewQuestion, NewTag, Question, QuestionEdit, QuestionTag, Tag, TagEdit,
+};
 use chrono::Local;
 use futures::future::{try_join_all, TryFutureExt};
 use std::fmt::Debug;
@@ -90,7 +92,7 @@ pub async fn edit_question(
   .await
   .map_err(SQLError)?;
 
-  Ok(warp::reply())
+  Ok(StatusCode::NO_CONTENT)
 }
 
 pub async fn delete_questions(id: IdObj, db: Db) -> Result<impl warp::Reply, warp::Rejection> {
@@ -102,12 +104,12 @@ pub async fn delete_questions(id: IdObj, db: Db) -> Result<impl warp::Reply, war
   Ok(StatusCode::NO_CONTENT)
 }
 
-pub async fn create_tag(name: BodyObj, db: Db) -> Result<impl warp::Reply, warp::Rejection> {
+pub async fn create_tag(tag: NewTag, db: Db) -> Result<impl warp::Reply, warp::Rejection> {
   let now = Local::now().naive_local();
 
   let id = sqlx::query!(
     "INSERT INTO tags (name, created_at, modified_at) VALUES(?,?,?)",
-    name.body,
+    tag.name,
     now,
     now
   )
@@ -127,6 +129,22 @@ pub async fn delete_tag(id: IdObj, db: Db) -> Result<impl warp::Reply, warp::Rej
     .execute(&db)
     .await
     .map_err(SQLError)?;
+
+  Ok(StatusCode::NO_CONTENT)
+}
+
+pub async fn edit_tag(json: TagEdit, db: Db) -> Result<impl warp::Reply, warp::Rejection> {
+  let now = Local::now().naive_local();
+
+  sqlx::query!(
+    "UPDATE tags SET name = ?, modified_at = ? WHERE id = ?",
+    json.name,
+    now,
+    json.id
+  )
+  .fetch_all(&db)
+  .await
+  .map_err(SQLError)?;
 
   Ok(StatusCode::NO_CONTENT)
 }

@@ -7,7 +7,7 @@
 </script>
 
 {#if $tagEditor}
-  <Overlay zIndex={50} on:close={() => ($tagEditor = false)}>
+  <Overlay on:close={() => ($tagEditor = false)}>
     <div class="back">
       <TagEditor />
     </div>

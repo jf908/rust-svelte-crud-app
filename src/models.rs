@@ -35,9 +35,15 @@ pub struct NewQuestion {
   pub tags: Option<Vec<i64>>,
 }
 
-#[derive(Serialize, Deserialize)]
-pub struct BodyObj {
-  pub body: String,
+#[derive(Deserialize)]
+pub struct NewTag {
+  pub name: String,
+}
+
+#[derive(Deserialize)]
+pub struct TagEdit {
+  pub id: i64,
+  pub name: String,
 }
 
 #[derive(Deserialize)]

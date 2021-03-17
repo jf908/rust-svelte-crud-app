@@ -65,7 +65,7 @@ export const api = {
     },
   },
   tag: {
-    add(name: BodyObj): Promise<IdObj> {
+    add(name: NewTag): Promise<IdObj> {
       return requestJson(url.tag, { method: 'POST', body: name });
     },
     get(): Promise<Tag[]> {
@@ -73,6 +73,9 @@ export const api = {
     },
     remove(id: IdObj) {
       return request(url.tag, { method: 'DELETE', body: id });
+    },
+    edit(tag: TagEdit) {
+      return request(url.tag, { method: 'PATCH', body: tag });
     },
   },
 };
@@ -104,8 +107,13 @@ export type IdObj = {
   id: number;
 };
 
-export type BodyObj = {
-  body: string;
+export type NewTag = {
+  name: string;
+};
+
+export type TagEdit = {
+  id: number;
+  name: string;
 };
 
 export type QuestionTag = {
