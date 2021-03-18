@@ -1,5 +1,5 @@
 use super::handlers;
-use super::models::Db;
+use super::models::{Db, QuestionQuery};
 use warp::{http::header, http::Method, Filter};
 
 pub fn root(db: Db) -> impl Filter<Extract = impl warp::Reply, Error = warp::Rejection> + Clone {
@@ -26,6 +26,8 @@ pub fn questions_list(
 ) -> impl Filter<Extract = impl warp::Reply, Error = warp::Rejection> + Clone {
   warp::path!("question")
     .and(warp::get())
+    .and(warp::query())
+    .and_then(parse_question_query)
     .and(with_db(db))
     .and_then(handlers::list_questions)
 }
@@ -121,30 +123,31 @@ fn with_db(db: Db) -> impl Filter<Extract = (Db,), Error = std::convert::Infalli
   warp::any().map(move || db.clone())
 }
 
-// #[cfg(test)]
-// mod tests {
-//   use crate::models::BodyObj;
-//   use sqlx::SqlitePool;
-//   use std::result::Result;
-//   use warp::http::StatusCode;
-//   use warp::test::request;
+async fn parse_question_query(
+  params: Vec<(String, String)>,
+) -> Result<QuestionQuery, warp::Rejection> {
+  let mut query = QuestionQuery {
+    limit: None,
+    offset: None,
+    tags: Vec::new(),
+  };
 
-//   #[tokio::test]
-//   async fn test_post() -> Result<(), anyhow::Error> {
-//     let db = SqlitePool::connect("sqlite::memory:").await?;
-//     let api = super::root(db);
+  for (key, value) in params {
+    if key == "tags" {
+      query
+        .tags
+        .push(value.parse::<i64>().map_err(|_| InvalidQuestionQuery {})?);
+    } else if key == "limit" {
+      query.limit = Some(value.parse::<i64>().map_err(|_| InvalidQuestionQuery {})?);
+    } else if key == "offset" {
+      query.offset = Some(value.parse::<i64>().map_err(|_| InvalidQuestionQuery {})?);
+    }
+  }
 
-//     let resp = request()
-//       .method("POST")
-//       .path("/question")
-//       .json(&BodyObj {
-//         body: String::from("Test Question"),
-//       })
-//       .reply(&api)
-//       .await;
+  Ok(query)
+}
 
-//     assert_eq!(resp.status(), StatusCode::CREATED);
+#[derive(Debug)]
+struct InvalidQuestionQuery;
 
-//     Ok(())
-//   }
-// }
+impl warp::reject::Reject for InvalidQuestionQuery {}

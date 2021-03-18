@@ -1,4 +1,4 @@
-const BASE_URL = 'http://localhost:3030';
+const BASE_URL = `${location.protocol}//${location.hostname}:3030`;
 
 type HTTPMethod =
   | 'CONNECT'
@@ -46,8 +46,15 @@ export const api = {
     remove(id: IdObj) {
       return request(url.question, { method: 'DELETE', body: id });
     },
-    get(): Promise<Question[]> {
-      return requestJson(url.question);
+    get({ tags, limit, offset }: QuestionQuery): Promise<Question[]> {
+      const params = new URLSearchParams({
+        limit: limit.toString(),
+        offset: offset.toString(),
+      });
+      for (const t of tags) {
+        params.append('tags', t.toString());
+      }
+      return requestJson(url.question + '?' + params.toString());
     },
     tag: {
       add(tag: QuestionTag) {
@@ -86,6 +93,12 @@ export type Question = {
   created_at: string;
   modified_at: string;
   tags: number[];
+};
+
+export type QuestionQuery = {
+  tags: number[];
+  limit: number;
+  offset: number;
 };
 
 export type NewQuestion = {

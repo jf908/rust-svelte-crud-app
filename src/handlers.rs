@@ -1,5 +1,6 @@
 use super::models::{
-  Db, IdObj, NewQuestion, NewTag, Question, QuestionEdit, QuestionTag, Tag, TagEdit,
+  Db, IdObj, NewQuestion, NewTag, Question, QuestionEdit, QuestionNoTags, QuestionQuery,
+  QuestionTag, Tag, TagEdit,
 };
 use chrono::Local;
 use futures::future::{try_join_all, TryFutureExt};
@@ -40,14 +41,54 @@ pub async fn create_question(q: NewQuestion, db: Db) -> Result<impl warp::Reply,
   ))
 }
 
-pub async fn list_questions(db: Db) -> Result<impl warp::Reply, warp::Rejection> {
-  let questions = sqlx::query!("SELECT * from questions")
+pub async fn list_questions(
+  query: QuestionQuery,
+  db: Db,
+) -> Result<impl warp::Reply, warp::Rejection> {
+  let limit = query.limit.unwrap_or(100);
+  let offset = query.offset.unwrap_or(0);
+
+  let sql_query;
+
+  let rows = if query.tags.len() <= 0 {
+    sqlx::query_as::<_, QuestionNoTags>(
+      "SELECT * from questions ORDER BY created_at DESC LIMIT ? OFFSET ?",
+    )
+    .bind(limit)
+    .bind(offset)
+  } else {
+    let tag_str = query
+      .tags
+      .iter()
+      .map(ToString::to_string)
+      .collect::<Vec<String>>()
+      .join(",");
+
+    sql_query = format!(
+      "SELECT * FROM questions WHERE id IN (
+        SELECT question_id FROM question_tags
+          WHERE question_id = id AND tag_id IN ({})
+          GROUP BY question_id HAVING COUNT(*) = ?
+      ) ORDER BY created_at LIMIT ? OFFSET ?",
+      tag_str
+    );
+
+    sqlx::query_as::<_, QuestionNoTags>(&sql_query)
+      .bind(query.tags.len() as i64)
+      .bind(limit)
+      .bind(offset)
+  };
+
+  let questions = rows
     .fetch_all(&db)
     .and_then(|qs| {
       try_join_all(qs.into_iter().map(|q| async {
         let tags = sqlx::query!(
-          "SELECT tag_id from question_tags where question_id = ?",
-          q.id,
+          "SELECT tag_id FROM question_tags
+            INNER JOIN tags ON id = tag_id
+            WHERE question_id = ? 
+            ORDER BY name",
+          q.id
         )
         .fetch_all(&db)
         .await?;
@@ -68,7 +109,7 @@ pub async fn list_questions(db: Db) -> Result<impl warp::Reply, warp::Rejection>
 }
 
 pub async fn list_tags(db: Db) -> Result<impl warp::Reply, warp::Rejection> {
-  let tags = sqlx::query_as!(Tag, "SELECT id, name from tags")
+  let tags = sqlx::query_as!(Tag, "SELECT id, name FROM tags ORDER BY name")
     .fetch_all(&db)
     .await
     .map_err(SQLError)?;

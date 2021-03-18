@@ -3,11 +3,21 @@
   import ConfirmModal from './components/modal/ConfirmModal.svelte';
   import Question from './components/Question.svelte';
   import QuestionInput from './components/QuestionInput.svelte';
-  import TagEditor from './components/TagEditor.svelte';
   import TagEditorOverlay from './components/TagEditorOverlay.svelte';
-  import { questions, reconnect } from './store';
+  import { moreQuestions, questions, reconnect } from './store';
 
   let connection = reconnect();
+
+  let gettingMore = false;
+
+  async function loadMore() {
+    gettingMore = true;
+    try {
+      await questions.getMore();
+    } finally {
+      gettingMore = false;
+    }
+  }
 </script>
 
 <ConfirmModal />
@@ -20,7 +30,7 @@
   <main>
     <div class="container">
       {#await connection}
-        <p>
+        <p class="center">
           <Loading />
           Loading...
         </p>
@@ -30,10 +40,19 @@
           {#each $questions as question}
             <Question {question} />
           {/each}
+          {#if $moreQuestions}
+            <div class="center">
+              {#if gettingMore}
+                <Loading />
+              {:else}<button on:click={loadMore}>Load more</button>{/if}
+            </div>
+          {/if}
         {/if}
       {:catch error}
-        <p>Failed to load</p>
-        <button on:click={() => (connection = reconnect())}>Reconnect</button>
+        <div class="center">
+          <p>Failed to load</p>
+          <button on:click={() => (connection = reconnect())}>Reconnect</button>
+        </div>
       {/await}
     </div>
   </main>
@@ -54,5 +73,9 @@
   main {
     padding: 1em 0;
     flex: 1;
+  }
+
+  .center {
+    text-align: center;
   }
 </style>

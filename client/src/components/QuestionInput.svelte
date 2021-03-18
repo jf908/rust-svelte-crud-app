@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { questions, tagEditor } from '../store';
+  import { questions, tagEditor, tags } from '../store';
 
   import AutoHeightTextarea from './AutoHeightTextarea.svelte';
   import TagFilter from './TagFilter.svelte';
@@ -25,6 +25,13 @@
       if (textarea) {
         textarea.focus();
       }
+    }
+  }
+
+  $: watch(selectedTags);
+  function watch(_: Set<number>) {
+    if (selectedTags) {
+      questions.refresh(Array.from(selectedTags));
     }
   }
 </script>

@@ -5,7 +5,6 @@
 <script lang="ts">
   import { fade } from 'svelte/transition';
   import { createEventDispatcher, onMount } from 'svelte';
-  import { writable } from 'svelte/store';
   const dispatch = createEventDispatcher();
 
   let id: number;
@@ -31,8 +30,8 @@
 <div
   class="overlay"
   style="z-index: {zIndex};"
-  on:click|self={() => dispatch('close')}
   transition:fade={{ duration: 100 }}>
+  <div class="backdrop" on:click={() => dispatch('close')} />
   <slot />
 </div>
 
@@ -43,13 +42,20 @@
     position: fixed;
     top: 0;
     left: 0;
-    padding: 1em;
-    background: rgba(0, 0, 0, 0.8);
     width: 100vw;
     height: 100vh;
-    display: flex;
+    padding: 1em;
     flex-direction: column;
+    display: flex;
     justify-content: center;
     align-items: center;
+  }
+
+  .backdrop {
+    position: absolute;
+    z-index: -1;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.8);
   }
 </style>

@@ -12,6 +12,21 @@ pub struct Question {
   pub tags: Vec<i64>,
 }
 
+#[derive(sqlx::FromRow)]
+pub struct QuestionNoTags {
+  pub id: i64,
+  pub body: String,
+  pub created_at: NaiveDateTime,
+  pub modified_at: NaiveDateTime,
+}
+
+#[derive(Clone)]
+pub struct QuestionQuery {
+  pub offset: Option<i64>,
+  pub limit: Option<i64>,
+  pub tags: Vec<i64>,
+}
+
 #[derive(Serialize)]
 pub struct Tag {
   pub id: i64,

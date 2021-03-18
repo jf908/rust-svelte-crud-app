@@ -1,8 +1,13 @@
 import { derived, writable } from 'svelte/store';
-import { api, Question, Tag, url } from './lib/api';
+import { api, Question, QuestionQuery, Tag, url } from './lib/api';
+
+export const moreQuestions = writable(false);
 
 function createQuestionStore() {
   const store = writable<Question[] | null>(null);
+
+  let queryLimit = 100;
+  let previousQuery: QuestionQuery | null = null;
 
   return {
     ...store,
@@ -11,7 +16,6 @@ function createQuestionStore() {
       store.update(
         (qs) =>
           qs && [
-            ...qs,
             {
               id,
               body,
@@ -19,19 +23,39 @@ function createQuestionStore() {
               modified_at: new Date().toISOString(),
               tags: tags || [],
             },
+            ...qs,
           ]
       );
+      if (previousQuery) {
+        previousQuery.offset++;
+      }
     },
     async deleteQuestion(id: number) {
       await api.question.remove({ id });
       store.update((qs) => qs && qs.filter((x) => x.id !== id));
+
+      if (previousQuery) {
+        previousQuery.offset--;
+      }
     },
     async editQuestion(id: number, body: string) {
       await api.question.edit({ id, body });
     },
-    async refresh() {
-      let qs = await api.question.get();
+    async refresh(tags: number[] = []) {
+      previousQuery = { tags, limit: queryLimit, offset: 0 };
+      let qs = await api.question.get(previousQuery);
       store.set(qs);
+      moreQuestions.set(qs.length === queryLimit);
+    },
+    async getMore() {
+      if (previousQuery) {
+        previousQuery.offset += queryLimit;
+        let qs = await api.question.get(previousQuery);
+        store.update(
+          (prevQuestions) => prevQuestions && [...prevQuestions, ...qs]
+        );
+        moreQuestions.set(qs.length === queryLimit);
+      }
     },
     async addTag(question_id: number, tag_id: number) {
       await api.question.tag.add({ question_id, tag_id });
@@ -53,7 +77,8 @@ function createTagsStore() {
       const { id } = await api.tag.add({ name });
       store.update(
         (ts) =>
-          ts && [
+          ts &&
+          [
             ...ts,
             {
               id,
@@ -61,7 +86,7 @@ function createTagsStore() {
               created_at: new Date().toISOString(),
               modified_at: new Date().toISOString(),
             },
-          ]
+          ].sort((a, b) => a.name.localeCompare(b.name))
       );
     },
     async editTag(id: number, name: string) {
