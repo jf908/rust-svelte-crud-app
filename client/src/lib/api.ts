@@ -114,6 +114,7 @@ export type QuestionEdit = {
 export type Tag = {
   id: number;
   name: string;
+  color: number | null;
 };
 
 export type IdObj = {
@@ -122,11 +123,13 @@ export type IdObj = {
 
 export type NewTag = {
   name: string;
+  color?: number;
 };
 
 export type TagEdit = {
   id: number;
-  name: string;
+  name?: string;
+  color?: number;
 };
 
 export type QuestionTag = {

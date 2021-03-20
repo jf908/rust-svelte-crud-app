@@ -83,14 +83,18 @@ function createTagsStore() {
             {
               id,
               name,
+              color: null,
               created_at: new Date().toISOString(),
               modified_at: new Date().toISOString(),
             },
           ].sort((a, b) => a.name.localeCompare(b.name))
       );
     },
-    async editTag(id: number, name: string) {
-      await api.tag.edit({ id, name });
+    async editTag(
+      id: number,
+      { name, color }: { name?: string; color?: number }
+    ) {
+      await api.tag.edit({ id, name, color });
     },
     async deleteTag(id: number) {
       await api.tag.remove({ id });

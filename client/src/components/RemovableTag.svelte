@@ -1,6 +1,7 @@
 <script lang="ts">
   import { createEventDispatcher } from 'svelte';
   import type { Tag } from '../lib/api';
+  import { getBackgroundTagColor, getTextTagColor } from '../lib/color';
   import { tagsMap } from '../store';
   import Icon from './Icon.svelte';
 
@@ -15,7 +16,10 @@
   $: tag = $tagsMap[id];
 </script>
 
-<div class="tag" title="ID:{tag.id}">
+<div
+  class="tag"
+  title="ID:{tag.id}"
+  style="background: {getBackgroundTagColor(tag.color)}; color: {getTextTagColor(tag.color)};">
   {tag.name}
   <div class="close">
     <Icon on:click={remove} icon="smallClose" />

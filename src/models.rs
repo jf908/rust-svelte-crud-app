@@ -31,6 +31,7 @@ pub struct QuestionQuery {
 pub struct Tag {
   pub id: i64,
   pub name: String,
+  pub color: Option<i64>,
 }
 
 #[derive(Serialize, Deserialize)]
@@ -53,12 +54,14 @@ pub struct NewQuestion {
 #[derive(Deserialize)]
 pub struct NewTag {
   pub name: String,
+  pub color: Option<i64>,
 }
 
 #[derive(Deserialize)]
 pub struct TagEdit {
   pub id: i64,
-  pub name: String,
+  pub name: Option<String>,
+  pub color: Option<i64>,
 }
 
 #[derive(Deserialize)]

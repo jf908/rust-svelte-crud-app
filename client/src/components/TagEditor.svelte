@@ -2,9 +2,8 @@
   import type { Tag } from '../lib/api';
 
   import { confirmModal, tags } from '../store';
+  import AsyncColorPicker from './AsyncColorPicker.svelte';
   import AsyncTextBox from './AsyncTextBox.svelte';
-  import Icon from './Icon.svelte';
-  import InlineTag from './InlineTag.svelte';
 
   let tagName = '';
 
@@ -25,8 +24,12 @@
     };
   }
 
-  async function editTag(id: number, name: string) {
-    await tags.editTag(id, name);
+  async function editName(id: number, name: string) {
+    await tags.editTag(id, { name });
+  }
+
+  async function editColor(id: number, color?: number) {
+    await tags.editTag(id, { color });
   }
 </script>
 
@@ -40,8 +43,11 @@
     {#if $tags}
       {#each $tags as tag}
         <div class="row">
+          <AsyncColorPicker
+            asyncChange={(v) => editColor(tag.id, v)}
+            bind:value={tag.color} />
           <AsyncTextBox
-            asyncChange={(v) => editTag(tag.id, v)}
+            asyncChange={(v) => editName(tag.id, v)}
             class="tag-name"
             bind:value={tag.name} />
           <div class="actions">
@@ -85,6 +91,10 @@
     border-radius: var(--border-radius);
     align-items: baseline;
     padding: 0.25em 0.5em;
+  }
+
+  .row :global(input) {
+    margin-right: 0.5em;
   }
 
   .row .actions {

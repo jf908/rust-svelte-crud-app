@@ -64,6 +64,22 @@ textarea,
   outline: 0;
 }
 
+input[type='color'] {
+  padding: 0;
+  overflow: hidden;
+  width: 2.143em;
+  height: 2.143em;
+  align-self: flex-end;
+}
+
+::-webkit-color-swatch-wrapper {
+  padding: 0;
+}
+
+::-webkit-color-swatch {
+  border: none;
+}
+
 button {
   cursor: pointer;
 }

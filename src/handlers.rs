@@ -109,7 +109,7 @@ pub async fn list_questions(
 }
 
 pub async fn list_tags(db: Db) -> Result<impl warp::Reply, warp::Rejection> {
-  let tags = sqlx::query_as!(Tag, "SELECT id, name FROM tags ORDER BY name")
+  let tags = sqlx::query_as!(Tag, "SELECT id, name, color FROM tags ORDER BY name")
     .fetch_all(&db)
     .await
     .map_err(SQLError)?;
@@ -149,8 +149,9 @@ pub async fn create_tag(tag: NewTag, db: Db) -> Result<impl warp::Reply, warp::R
   let now = Local::now().naive_local();
 
   let id = sqlx::query!(
-    "INSERT INTO tags (name, created_at, modified_at) VALUES(?,?,?)",
+    "INSERT INTO tags (name, color, created_at, modified_at) VALUES(?,?,?,?)",
     tag.name,
+    tag.color,
     now,
     now
   )
@@ -177,15 +178,33 @@ pub async fn delete_tag(id: IdObj, db: Db) -> Result<impl warp::Reply, warp::Rej
 pub async fn edit_tag(json: TagEdit, db: Db) -> Result<impl warp::Reply, warp::Rejection> {
   let now = Local::now().naive_local();
 
-  sqlx::query!(
-    "UPDATE tags SET name = ?, modified_at = ? WHERE id = ?",
-    json.name,
-    now,
-    json.id
-  )
-  .fetch_all(&db)
-  .await
-  .map_err(SQLError)?;
+  let mut tx = db.begin().await.map_err(SQLError)?;
+
+  if let Some(name) = json.name {
+    sqlx::query!(
+      "UPDATE tags SET name = ?, modified_at = ? WHERE id = ?",
+      name,
+      now,
+      json.id
+    )
+    .fetch_all(&mut tx)
+    .await
+    .map_err(SQLError)?;
+  }
+
+  if let Some(color) = json.color {
+    sqlx::query!(
+      "UPDATE tags SET color = ?, modified_at = ? WHERE id = ?",
+      color,
+      now,
+      json.id
+    )
+    .fetch_all(&mut tx)
+    .await
+    .map_err(SQLError)?;
+  }
+
+  tx.commit().await.map_err(SQLError)?;
 
   Ok(StatusCode::NO_CONTENT)
 }

@@ -1,11 +1,19 @@
 <script lang="ts">
   import type { Tag } from '../lib/api';
+  import { getBackgroundTagColor, getTextTagColor } from '../lib/color';
 
   export let tag: Tag;
   export let selected = true;
 </script>
 
-<div class="tag" title="ID:{tag.id}" class:selected on:click>{tag.name}</div>
+<div
+  class="tag"
+  title="ID:{tag.id}"
+  class:selected
+  style="background: {getBackgroundTagColor(tag.color)}; color: {getTextTagColor(tag.color)};"
+  on:click>
+  {tag.name}
+</div>
 
 <style>
   .tag {
