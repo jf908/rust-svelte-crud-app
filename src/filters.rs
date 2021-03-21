@@ -13,6 +13,7 @@ pub fn root(db: Db) -> impl Filter<Extract = impl warp::Reply, Error = warp::Rej
     .or(tag_remove(db.clone()))
     .or(tag_create(db.clone()))
     .or(tag_delete(db.clone()))
+    .or(warp::fs::dir("client/build"))
     .with(
       warp::cors()
         .allow_any_origin()
