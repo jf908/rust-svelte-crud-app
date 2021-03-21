@@ -1,5 +1,9 @@
 # Rust + Svelte CRUD App
 
+![Screenshot](https://imgur.com/Rp6ZsLh.png)
+
+An example [CRUD](https://en.wikipedia.org/wiki/Create,_read,_update_and_delete) application that stores pieces of text and allows you to tag them.
+
 ## Quick Start
 
 Requires [Node.js](https://nodejs.org) and [Rust](https://www.rust-lang.org/tools/install)
