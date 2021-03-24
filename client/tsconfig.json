@@ -6,7 +6,8 @@
     "lib": ["DOM", "ES2017", "WebWorker"],
     "resolveJsonModule": true,
     "noEmit": true,
-    "strict": true
+    "strict": true,
+    "types": ["svelte", "snowpack-env"]
   },
   "include": ["src/**/*"],
   "exclude": ["node_modules/*", "__sapper__/*", "public/*"]
